@@ -37,6 +37,7 @@ function objectToServer() {
         $('#firstValue').val('');
         $('#secondValue').val('');
     }  else {
+
     let objectToSend = {
         numOne: Number(inputOne),
         numTwo: Number(inputTwo),
@@ -56,6 +57,7 @@ function objectToServer() {
         getCalculatorData();
         $('#firstValue').val('');
         $('#secondValue').val('');
+        
         operations.length = 0;
        
     });
@@ -111,5 +113,12 @@ function reEnterData (){
 
     console.log(reInputOne, reInputTwo, operator);
     
-    
+    $('#firstValue').val(reInputOne);
+    $('#secondValue').val(reInputTwo)
+    if (operator === '+') {
+        console.log('in if statement');
+        
+        $('#plusOperator').trigger('click');
+    }
+
 }
