@@ -20,10 +20,21 @@ let operations = [];
 //FUN WAY OF CAPTURING VALUES OF BUTTONS OR ELEMENTS LINE 21
 function clickValue(event) {
     event.preventDefault();
-    operator = $(this).attr('value');
-    operations.push(operator)
-    //disable buttons not clicked
-    $(this).siblings('button.operator').prop('disabled', true);
+
+    //if / else statements toggle the buttons on / off if the user clicks same button  twice 
+    if (
+        $(this).prop('disabled') === false &&
+        $(this).siblings('button.operator').prop('disabled') === true 
+    ) {
+        console.log('prop is enabled')
+        $(this).siblings('button.operator').prop('disabled', false)
+        operations.length = 0;
+    } else {
+        operations.length = 0;
+        operator = $(this).attr('value');
+        operations.push(operator)
+        $(this).siblings('button.operator').prop('disabled', true);
+    }
 }
 
 //POST THAT UNPROCESSED DATA TO SERVER!
@@ -37,7 +48,7 @@ function objectToServer() {
     // keeps form from sending if any value or operator is empty. 
     //I chose not to reset the values of inputs to allow user to keep what user already entered
     if ( operations.length === 0 || inputOne.length === 0 || inputTwo.length === 0) {
-        alert('you must enter both numbers and an operator')
+        alert('you must enter both numbers and pick an operator')
     }  else {
 
     let objectToSend = {
@@ -81,7 +92,6 @@ function getCalculatorData() {
     }).then(function (response) {
         $('#resultsTarget').empty();
         console.log(response);
-        
         //clear array that holds equations to remove old entries
         arrayOfEquations.length = 0;
         //push processed data to array(equation) to be used with re-entering data on click
