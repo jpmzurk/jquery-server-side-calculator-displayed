@@ -38,6 +38,13 @@ app.delete( '/calculator/delete', ( req, res )=>{
     res.sendStatus( 200 );
  })
 
+ app.delete( '/calculator/:index', ( req, res )=>{
+    console.log( 'in /calculator index:', req.params.index );
+    let indexToRemove = req.params.index;
+    //remove equation from answers array by index number
+    calculatorAnswers.splice(indexToRemove, 1)
+    res.sendStatus( 200 );
+ }) 
 
 
 

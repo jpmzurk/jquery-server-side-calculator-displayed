@@ -11,6 +11,8 @@ function clickListeners() {
     $('#equalsButton').on('click', objectToServer);
     $('#resultsTarget').on('click', '.list' ,reEnterData)
     $('#deleteParent').on('click', '#clearHistory', deleteServerEquations)
+    $('#resultsTarget').on('click', '.useTotal' , useTotal)
+    $('#resultsTarget').on('click', '.deleteThis' , singleDelete)
 }
 
 let operations = [];
@@ -71,13 +73,15 @@ function objectToServer() {
 //GET THAT PROCESSED DATA!
 function getCalculatorData() {
     console.log('in get calculatorData');
-
+    console.log(arrayOfEquations);
+    
     $.ajax({
         type: 'GET',
         url: '/calculator'
     }).then(function (response) {
         $('#resultsTarget').empty();
-       
+        console.log(response);
+        
         //clear array that holds equations to remove old entries
         arrayOfEquations.length = 0;
         //push processed data to array(equation) to be used with re-entering data on click
@@ -94,13 +98,17 @@ function getCalculatorData() {
 //PUT YR PROCESSED DATA ON THE DOM
 function addDataToDom(answer) {
     console.log('in addDataToDom heres the returned data', answer);
-    
+
+    let useTotalBtn = `<button class= "btn btn-success useTotal form-control"> Use Total</button>`
+    let deleteThisBtn = `<button class= "btn btn-outline-danger deleteThis form-control"> Delete this line </button>`
     // append that data to the DOM
     for (let i = 0; i < answer.length; i++) {
         let returnedData = answer[i];
         $('#resultsTarget').append(`
-        <li class="list-group-item list" data-index="${i}" >
-            ${returnedData.numOne}  ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total}</li>
+        <form class="form-inline toDelete">
+        <li class="list-group-item list form-control" data-index="${i}" >
+            ${returnedData.numOne}  ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total} </li> ${useTotalBtn} ${deleteThisBtn}
+        <form>    
         `);
     }
     //add the clear all button ONLY if there is at least list item with the class of list
@@ -164,9 +172,45 @@ function deleteServerEquations() {
         //this probably could have been a get i suppose
     }).then( function( response ){
         getCalculatorData();
+        //clear input fields in case USE TOTAL button has been pressed or user has inputs in the fields
+        $('#clearButton').trigger('click')
     }).catch( function( err ){
         console.log( err );
         alert( 'Unable to delete at this time. Try again later.' );
     })
+}
+
+function useTotal (event) {
+    event.preventDefault();
+    clickedIndex = $(this).siblings('.list').data( 'index' );
+    let anObject = arrayOfEquations[0];
+    //get clicked on equation 
+    let desiredEquation = anObject[clickedIndex];
+    let total = desiredEquation.total;
+    $('#firstValue').val(total);
+}
+
+
+function singleDelete(event) {
+    event.preventDefault();
+    console.log('in singleDelete');
+    let index = $(this).siblings('.list').data( 'index' );
+    console.log(index);
+    
+    $.ajax({
+        type: 'DELETE',
+        url: '/calculator/' + index
+    }).then( function( response ){
+        console.log(response);
+        getCalculatorData()
+    }).catch( function( err ){
+        console.log( err );
+        alert( 'Unable to delete at this time. Try again later.' );
+    })
+
+
+    // let listToDelete= $(this).parent('.toDelete');
+    // console.log(listToDelete);
+    // listToDelete.remove();
 }
 

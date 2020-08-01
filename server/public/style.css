@@ -10,7 +10,9 @@ li:hover {
 .list   {
     margin-left: 20px;
     width: 20%;
-    text-indent: 5px;
+
+    /* text-indent: 5px; */
+    /* display:inline-block; */
 }
 
 h1 {
@@ -27,4 +29,13 @@ h1 {
     margin-left: 20px;
     margin-bottom: 20px;
 
+}
+.btn-success {
+    display:inline-block;
+    width: 15%;
+}
+
+.list-group-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
