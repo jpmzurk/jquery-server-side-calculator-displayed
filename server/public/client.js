@@ -13,12 +13,9 @@ function clickListeners() {
     $('#deleteParent').on('click', '#clearHistory', deleteServerEquations)
 }
 
-
 let operations = [];
 
-
-//FUN WAY OF CAPTURING VALUES OF BUTTONS OR ELEMENTS FOR THAT MATTER
-//ALSO DISABLES OTHER BUTTONS ONCE A OPERATOR IS SELECTED 
+//FUN WAY OF CAPTURING VALUES OF BUTTONS OR ELEMENTS LINE 21
 function clickValue(event) {
     event.preventDefault();
     operator = $(this).attr('value');
@@ -27,24 +24,24 @@ function clickValue(event) {
     $(this).siblings('button.operator').prop('disabled', true);
 }
 
-
 //POST THAT UNPROCESSED DATA TO SERVER!
 function objectToServer() {
+    //get values from inputs
     let inputOne = $('#firstValue').val();
     let inputTwo = $('#secondValue').val();
 
      //turn buttons not clicked back on
     $(this).siblings('button.operator').prop('disabled', false);
-
+    // keeps form from sending if any value or operator is empty. 
+    //I chose not to reset the values of inputs to allow user to keep what user already entered
     if ( operations.length === 0 || inputOne.length === 0 || inputTwo.length === 0) {
         alert('you must enter both numbers and an operator')
-        $('#firstValue').val('');
-        $('#secondValue').val('');
     }  else {
 
     let objectToSend = {
         numOne: Number(inputOne),
         numTwo: Number(inputTwo),
+        //call the first and what should be the only operator in operations array
         operator: String(operations[0]),
         total : 0,
     }
@@ -63,7 +60,10 @@ function objectToServer() {
         $('#secondValue').val('');
         operations.length = 0;
        
-    });
+    }).catch( function( err ){
+        console.log( err );
+        alert( 'Unable to post anything at this time. Try again later.' );
+    })
     }
 }
 
@@ -78,14 +78,14 @@ function getCalculatorData() {
     }).then(function (response) {
         $('#resultsTarget').empty();
        
-        //clear array that holds equations to keep out duplicates
+        //clear array that holds equations to remove old entries
         arrayOfEquations.length = 0;
         //push processed data to array(equation) to be used with re-entering data on click
         arrayOfEquations.push(response)
         addDataToDom (response);
     }).catch( function( err ){
         console.log( err );
-        alert( 'Unable to delete at this time. Try again later.' );
+        alert( 'Unable to get data, try again later.' );
     })
 }
 
@@ -103,7 +103,7 @@ function addDataToDom(answer) {
             ${returnedData.numOne}  ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total}</li>
         `);
     }
-
+    //add the clear all button ONLY if there is at least list item with the class of list
     let removeAllBtn = `<button class= "btn btn-warning" id="clearHistory" > clear your entire history</button>`;
     let listItems = $('li.list').length;
     if ( 
@@ -114,17 +114,15 @@ function addDataToDom(answer) {
     } else {
         $('#deleteHistory').empty();
     }
-    console.log('this is the list items total', listItems);
 }
 
 
+//need an array to deal with list items
 let arrayOfEquations = [];
 
-
-//PUT THE CLICKED EQUATION BACK INTO FORM
+//PUT THE CLICKED LI (EQUATION) BACK INTO FORM
 function reEnterData (){
     //get the li index
-    // clickedIndex = $(this).attr('data-index');
     let clickedIndex = $( this ).data( 'index' );
     //get the objects instead of the array
     let anObject = arrayOfEquations[0];
@@ -162,6 +160,8 @@ function deleteServerEquations() {
     $.ajax({
         type: 'DELETE',
         url: '/calculator/delete'
+        //this request will ask the server to empty the array of objects on server
+        //this probably could have been a get i suppose
     }).then( function( response ){
         getCalculatorData();
     }).catch( function( err ){

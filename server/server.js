@@ -8,14 +8,16 @@ const PORT = 5000;
 app.use(bodyParser.urlencoded({extended : true}))
 app.use(express.static('server/public'));
 
-
+//basically a temporary array for pre-calculated objects
 let calculatorInfo = [];
+//post-calculated objects
 let calculatorAnswers = [];
 
 app.post("/calculator", (req, res) => {
     let sentObject = req.body;
     // console.log('this is the new equation', sentObject);
     calculatorInfo.push(sentObject)
+    //calculate those objects!
     calculate(calculatorInfo)
     res.sendStatus(201);
 })
@@ -23,23 +25,26 @@ app.post("/calculator", (req, res) => {
 
 app.get('/calculator', (req, res) => {
     console.log('in calculator GET');
+    //send back the array of objects that have the total key/value pair
     res.send(calculatorAnswers);
+    //clear pre-calculated objects
     calculatorInfo.length = 0;
 });
 
 
 app.delete( '/calculator/delete', ( req, res )=>{
-    console.log( 'in /calculator deleteAll', req.body );
+    console.log( 'in /calculator/delete', req.body );
     calculatorAnswers.length = 0;
     res.sendStatus( 200 );
- }) //end delete
+ })
 
 
 
 
 function calculate(someObject) {
     console.log('in calculate');
-    
+    //calculates sent objects 
+    //then pushes the object with the total as a key/value to answers array on server
     for (let i = 0; i < someObject.length; i++) {
         let newerObject = someObject[i];
         console.log(newerObject);
