@@ -18,14 +18,12 @@ let operations = [];
 function clickValue(event) {
     event.preventDefault();
 
-    operator = $(this).attr("value");
+    operator = $(this).attr('value');
     console.log(operator);
-    if (operator === ''){
-        return;
-    } else {
     operations.push(operator)
+    $(this).siblings('button.operator').prop('disabled', true);
     console.log(operations);
-    }
+    
 }
 
 
@@ -36,18 +34,18 @@ function objectToServer() {
     // let inputTwo = $('#secondValue').val();
 
     // console.log(inputOne.length);
-    
+     $(this).siblings('button.operator').prop('disabled', false);
 
-    // if ( operations.length === 0) {
-    //     alert('you must enter both numbers and only one operator')
-    //     $('#firstValue').val('');
-    //     $('#secondValue').val('');
+    if ( operations.length === 0) {
+        alert('you must enter both numbers and only one operator')
+        $('#firstValue').val('');
+        $('#secondValue').val('');
 
-    // } else {
+    } else {
     let objectToSend = {
         numOne: Number($('#firstValue').val()),
         numTwo: Number($('#secondValue').val()),
-        operator : String(operations),
+        operator : String(operations[0]),
         total : 0,
     }
 
@@ -65,8 +63,9 @@ function objectToServer() {
         $('#firstValue').val('');
         $('#secondValue').val('');
         operations.length = 0;
+       
     });
-
+    }
 }
 
 
@@ -97,7 +96,7 @@ function addDataToDom(answer) {
         let returnedData = answer[i];
         $('#resultsTarget').append(`
            
-        <li class="list-group-item list-group-hover" data-index="${i}" >${returnedData.numOne}  ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total}</li>
+        <li class="list-group-item list " data-index="${i}" >${returnedData.numOne}  ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total}</li>
         `);
     }
     
