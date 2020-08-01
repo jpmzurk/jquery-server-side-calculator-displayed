@@ -27,6 +27,16 @@ app.get('/calculator', (req, res) => {
     calculatorInfo.length = 0;
 });
 
+
+app.delete( '/calculator/delete', ( req, res )=>{
+    console.log( 'in /calculator deleteAll', req.body );
+    calculatorAnswers.length = 0;
+    res.sendStatus( 200 );
+ }) //end delete
+
+
+
+
 function calculate(someObject) {
     console.log('in calculate');
     
