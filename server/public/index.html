@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./vendors/jquery-3.5.1.min.js"> </script>
+    <script src="client.js"></script>
+    <link rel="stylesheet" href="./vendors/bootstrap.css">
+
+    <link rel="stylesheet" href="style.css">
+    <title>Calculator</title>
+</head>
+<body>
+    <header> <h1>Server Side Calculator</h1></header>
+    <main">
+        <form id="calculator" class="form-inline"">
+            <input class="form-inline"id="firstValue" type="text" placeholder="number 1">
+            <button class= "btn btn-outline-secondary form-control" id="plusOperator" type="operator" value="+" => + </button>
+            <button class= "btn btn-outline-secondary form-control" id="minusOperator" type="operator" value="-"> - </button>
+            <button class= "btn btn-outline-secondary form-control" id="multiplyOperator" type="operator" value="*"> * </button>
+            <button class= "btn btn-outline-secondary form-control" id="divideOperator" type="operator" value="/"> / </button>
+            <input class="form-control"id="secondValue" type="text" placeholder="number 2">
+            <button class= "btn btn-outline-secondary form-control" id="equalsButton" type="button" value="="> = </button>
+            <button class= "btn btn-outline-secondary form-control" id="clearButton" type="clear" value="delete"> clear </button>
+        </form> 
+    </main>
+    <section >
+        <ul id="resultsTarget"> </ul>
+
+        
+    </section>
+</body>
+</html>

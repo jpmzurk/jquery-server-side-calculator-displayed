@@ -1,0 +1,9 @@
+body, input, button {
+
+    margin: 8px;
+}
+
+.list-group-hover {
+    background-color: #f5f5f5c3;
+    width: 20%;
+}
