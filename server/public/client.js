@@ -48,7 +48,7 @@ function objectToServer() {
     // keeps form from sending if any value or operator is empty. 
     //I chose not to reset the values of inputs to allow user to keep what user already entered
     if ( operations.length === 0 || inputOne.length === 0 || inputTwo.length === 0) {
-        alert('you must enter both numbers and pick an operator')
+        alert('you must enter numbers in both fields and select an operator')
     }  else {
 
     let objectToSend = {
@@ -110,7 +110,7 @@ function addDataToDom(answer) {
     console.log('in addDataToDom heres the returned data', answer);
 
     let useTotalBtn = `<button class= "btn btn-success useTotal form-control"> Use Total</button>`
-    let deleteThisBtn = `<button class= "btn btn-outline-danger deleteThis form-control"> Delete this line </button>`
+    let deleteThisBtn = `<button class= "btn btn-outline-danger deleteThis form-control"> Remove This Equation </button>`
     // append that data to the DOM
     for (let i = 0; i < answer.length; i++) {
         let returnedData = answer[i];
@@ -122,7 +122,7 @@ function addDataToDom(answer) {
         `);
     }
     //add the clear all button ONLY if there is at least list item with the class of list
-    let removeAllBtn = `<button class= "btn btn-warning" id="clearHistory" > clear your entire history</button>`;
+    let removeAllBtn = `<button class= "btn btn-danger" id="clearHistory" > Clear The Entire History</button>`;
     let listItems = $('li.list').length;
     if ( 
         listItems > 0

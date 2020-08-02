@@ -6,15 +6,19 @@ Jquery Server Side Calculator
 
 Duration: One day sprint
 
-This app serves up a basic, one-equation calculator.  The user may only use two numbers and one operator to create an equation. The output of the user-selected equation is shown as a list item. The list items are stored on a server and each list item remains on the DOM until either A.) the user presses the clear history button or B.) the server is reset.  Additionally the user can re-use their same equation by clicking on that list item. 
+This app serves up a basic, one-equation calculator.  The user may only use two numbers and one operator to create an equation. Without both numbers and an operator the app will not run and the equation will not be created.  If the user input is made correctly, the equations are sent to the server, processed and stored there.  The app requests the user-selected equation, with its total, from the server. When it is received it processed and displayed as a list item.  This data will live on the local server created until either the server is turned off or it is removed by the user with the remove/clear buttons. 
 
-The problems here were three fold: 1. how to make the calculator single-use, 2. how store the user equation and output and 3. how to clear all the of users equations from DOM.  
+The problems here were three fold: 1. how to make the calculator single-use, 2. how store the user equation and total and 3. how to clear all the of users equations from DOM.  
 
-In order to make the calculator single-use the operator buttons are disable after one is selected.  This keeps the user from entering more than one operator. Since the inputs are set up as a form it is always single-stage. That is, they can only take one input in each field and the form is reset upon pressing "=". 
+In order to make the calculator single-use, the operator buttons are disabled after one is selected.  Conveniently, if the user changes their mind, the disabled buttons can be re-enabled by clicking again on that same operator. In order to ensure correct functionality the user must enter a number in both fields and select an operator to create an equation. A warning is displayed if user clicks "=" and those conditions are not met. 
 
-Updating a server-side array with post requests solved the problem of storing user inputs and total. The server then processed that array with a calculation function to get the result of user inputs. A get request then fetched an object with user inputs and also the result the inputs. This was then displayed on the Dom. 
+To solve the problem of storing the user-made data, the client.js file uses a post request with node/express/ajax to send the data to a server. The server then passes the user data to a calculation function to get the total for the equation. Once that is completed it is stored as an array of objects that contain the equations and their totals. A get request then fetches the data and passes to a function that displays the equation with its total on the Dom. The equations can be deleted from the sever one by one with the delete this equation button.  
 
-As mentioned prior, the object returned is displayed as a list item with both inputs, operator and result. Deleting the list items was accomplished simply by using a delete request and emptying the array of completed objects before the response was returned to the client-side.
+To clear the history of all equations was accomplished by using a clear entire history button and attaching it to a delete request and emptying the array of with equations and totals. In order to remove one equation at a time, the user may use the "remove this equation" button.  In order to remove this, the index value attached to list item is sent to the server with a delete request and the server removes the corresponding object.  Once the delete response is confirmed from the server the app runs a get request runs to retrieve the updated array from the server.  The updated array, without the removed equation, is displayed on the DOM. 
+
+
+Finally, if the user intends to use the calculator as an instrument to complete compound equation a button use the total of an equation is next to listed equation. By pressing the button the first input receives the value of the total. 
+
 
 Screenshots: 
 ![Screenshot1](images/ScreenShot1.png)
