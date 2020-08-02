@@ -4,28 +4,94 @@ function onReady() {
     // load data from the server, put it on the DOM
     getCalculatorData();
     clickListeners();
+    keyPressListeners();
 }
 
 function clickListeners() {
-    $('#plusOperator, #minusOperator, #multiplyOperator, #divideOperator').on('click',  clickValue);
-    $('#equalsButton').on('click', objectToServer);
+    $('#squareRoot').on('click', hideInput);
+    $('#plusOperator, #minusOperator, #multiplyOperator, #divideOperator, #squareRoot').on('click',  clickValue);
+    $('#equalsButton').on('click', objectFilter);
     $('#resultsTarget').on('click', '.list' ,reEnterData)
     $('#deleteParent').on('click', '#clearHistory', deleteServerEquations)
     $('#resultsTarget').on('click', '.useTotal' , useTotal)
     $('#resultsTarget').on('click', '.deleteThis' , singleDelete)
 }
 
+function keyPressListeners() {
+    $(document).keyup(function (e) { 
+        if (e.shiftKey === false) {     
+            if (e.which === 187 || e.which === 13) {
+                $('#equalsButton').siblings('button.operator').prop('disabled', false);
+                objectFilter();
+        }   else if (e.which === 189){
+
+            console.log('you pressed -');
+            if (
+                $('#minusOperator').prop('disabled') === false &&
+                $('#minusOperator').siblings('button.operator').prop('disabled') === true 
+            ) {
+                $('#minusOperator').siblings('button.operator').prop('disabled', false)
+
+            } else {
+            $('#minusOperator').siblings('button.operator').prop('disabled', false);
+            $('#minusOperator').trigger('click'); 
+            }
+        } else if (e.which === 191){
+            console.log('you pressed /');
+            if (
+                $('#divideOperator').prop('disabled') === false &&
+                $('#divideOperator').siblings('button.operator').prop('disabled') === true 
+            ) {
+                $('#divideOperator').siblings('button.operator').prop('disabled', false)
+
+            } else {
+            $('#divideOperator').siblings('button.operator').prop('disabled', false);
+            $('#divideOperator').trigger('click'); 
+            }
+        } 
+        }
+        else if (e.shiftKey === true ){
+            if (e.which === 187){
+                console.log('you pressed +');
+                if (
+                    $('#plusOperator').prop('disabled') === false &&
+                    $('#plusOperator').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#plusOperator').siblings('button.operator').prop('disabled', false)
+    
+                } else {
+                $('#plusOperator').siblings('button.operator').prop('disabled', false);
+                $('#plusOperator').trigger('click'); 
+                }
+            } else if (e.which === 56){
+                console.log('you pressed *');
+                if (
+                    $('#multiplyOperator').prop('disabled') === false &&
+                    $('#multiplyOperator').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#multiplyOperator').siblings('button.operator').prop('disabled', false)
+    
+                } else {
+                $('#multiplyOperator').siblings('button.operator').prop('disabled', false);
+                $('#multiplyOperator').trigger('click'); 
+                }
+            }
+        }
+
+    })
+} 
+
+
 let operations = [];
 
-//FUN WAY OF CAPTURING VALUES OF BUTTONS OR ELEMENTS LINE 21
 function clickValue(event) {
     event.preventDefault();
 
     //if / else statements toggle the buttons on / off if the user clicks same button  twice 
-    if (
+    if (   
         $(this).prop('disabled') === false &&
-        $(this).siblings('button.operator').prop('disabled') === true 
-    ) {
+        $(this).siblings('button.operator').prop('disabled') === true) 
+    {
         console.log('prop is enabled')
         $(this).siblings('button.operator').prop('disabled', false)
         operations.length = 0;
@@ -37,48 +103,79 @@ function clickValue(event) {
     }
 }
 
-//POST THAT UNPROCESSED DATA TO SERVER!
-function objectToServer() {
-    //get values from inputs
+        //filter and package data in object before being sent to server
+function objectFilter() {
     let inputOne = $('#firstValue').val();
     let inputTwo = $('#secondValue').val();
-
+    let operatorValue = String(operations[0]);
+    
      //turn buttons not clicked back on
     $(this).siblings('button.operator').prop('disabled', false);
     // keeps form from sending if any value or operator is empty. 
-    //I chose not to reset the values of inputs to allow user to keep what user already entered
     if ( operations.length === 0 || inputOne.length === 0 || inputTwo.length === 0) {
-        alert('you must enter numbers in both fields and select an operator')
-    }  else {
+        alert('with regular operators (+ - / *)you must enter numbers in both fields and select an operator')
+    }  else if (operatorValue !== '√'){
 
-    let objectToSend = {
-        numOne: Number(inputOne),
-        numTwo: Number(inputTwo),
-        //call the first and what should be the only operator in operations array
-        operator: String(operations[0]),
-        total : 0,
+            let objectToSend = {
+                numOne: Number(inputOne),
+                numTwo: Number(inputTwo),
+                operator: operatorValue,
+                total : 0,
+            }
+            console.log(objectToSend)
+            postData(objectToSend)
+
+    } else if ((operatorValue) === '√'){
+            let objectToSend = {
+            numOne: 'empty',
+            numTwo: Number(inputTwo),
+            operator: operatorValue,
+            total : 0,
+        }
+            console.log(objectToSend)
+            postData(objectToSend)    
+            
     }
 
-    console.log(objectToSend);
+}
 
+//POST DATA TO SERVER!
+function postData(anotherObject) {
+    console.log('in postData', anotherObject);
+    
     $.ajax({
         url: "/calculator",
         method: "POST",
-        data: objectToSend,
-        
+        data: anotherObject,
+            
     }).then(function (response) {
-        console.log('response from POST', response);
-        getCalculatorData();
-        $('#firstValue').val('');
-        $('#secondValue').val('');
-        operations.length = 0;
-       
+            console.log('response from POST', response);
+            getCalculatorData();
+            $('#firstValue').val('');
+            $('#secondValue').val('');
+            operations.length = 0;
+        
     }).catch( function( err ){
-        console.log( err );
-        alert( 'Unable to post anything at this time. Try again later.' );
+            console.log( err );
+            alert( 'Unable to post anything at this time. Try again later.' );
     })
-    }
 }
+
+function hideInput() {
+    if ( $('#squareRoot').siblings('button.operator').prop('disabled') === true)
+        { $('#firstValue').show();
+        $('#firstValue').val('')
+        $('#plusOperator').removeClass('list')
+ 
+    } else if ($('#squareRoot').siblings('button.operator').prop('disabled') === false){
+        $('#firstValue').hide();
+        $('#firstValue').val('')
+        $('#plusOperator').addClass('list')
+    }
+
+    $('#firstValue').val(0);
+}
+
 
 
 //GET THAT PROCESSED DATA!
@@ -96,6 +193,7 @@ function getCalculatorData() {
         arrayOfEquations.length = 0;
         //push processed data to array(equation) to be used with re-entering data on click
         arrayOfEquations.push(response)
+        $('#firstValue').show();
         addDataToDom (response);
     }).catch( function( err ){
         console.log( err );
@@ -104,22 +202,30 @@ function getCalculatorData() {
 }
 
 
-
 //PUT YR PROCESSED DATA ON THE DOM
 function addDataToDom(answer) {
     console.log('in addDataToDom heres the returned data', answer);
 
-    let useTotalBtn = `<button class= "btn btn-success useTotal form-control"> Use Total</button>`
+    let useTotalBtn = `<button class= "btn btn-warning useTotal form-control"> Use Total</button>`
     let deleteThisBtn = `<button class= "btn btn-outline-danger deleteThis form-control"> Remove This Equation </button>`
     // append that data to the DOM
     for (let i = 0; i < answer.length; i++) {
         let returnedData = answer[i];
+        if (returnedData.numOne === 'empty') {
+            $('#resultsTarget').append(`
+            <form class="form-inline toDelete">
+            <li class="list-group-item list form-control" data-index="${i}" >
+                ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total} </li> ${useTotalBtn} ${deleteThisBtn}
+            <form>    
+            `);
+        } else {
         $('#resultsTarget').append(`
         <form class="form-inline toDelete">
         <li class="list-group-item list form-control" data-index="${i}" >
             ${returnedData.numOne}  ${returnedData.operator} ${returnedData.numTwo} = ${returnedData.total} </li> ${useTotalBtn} ${deleteThisBtn}
         <form>    
         `);
+        }
     }
     //add the clear all button ONLY if there is at least list item with the class of list
     let removeAllBtn = `<button class= "btn btn-danger" id="clearHistory" > Clear The Entire History</button>`;
@@ -179,7 +285,6 @@ function deleteServerEquations() {
         type: 'DELETE',
         url: '/calculator/delete'
         //this request will ask the server to empty the array of objects on server
-        //this probably could have been a get i suppose
     }).then( function( response ){
         getCalculatorData();
         //clear input fields in case USE TOTAL button has been pressed or user has inputs in the fields
@@ -218,9 +323,5 @@ function singleDelete(event) {
         alert( 'Unable to delete at this time. Try again later.' );
     })
 
-
-    // let listToDelete= $(this).parent('.toDelete');
-    // console.log(listToDelete);
-    // listToDelete.remove();
 }
 

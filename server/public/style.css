@@ -22,7 +22,12 @@ h1 {
 
 #firstValue {
     margin-left: 20px;
+    border-color: rgba(162, 160, 157, 0.954);
+}
 
+
+#secondValue {
+    border-color: rgba(162, 160, 157, 0.954);
 }
 
 .btn-danger {
