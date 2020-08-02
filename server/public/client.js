@@ -8,13 +8,14 @@ function onReady() {
 }
 
 function clickListeners() {
-    $('#squareRoot').on('click', hideInput);
     $('#plusOperator, #minusOperator, #multiplyOperator, #divideOperator, #squareRoot').on('click',  clickValue);
+    $('#squareRoot').on('click', hideInput);
     $('#equalsButton').on('click', objectFilter);
     $('#resultsTarget').on('click', '.list' ,reEnterData)
     $('#deleteParent').on('click', '#clearHistory', deleteServerEquations)
     $('#resultsTarget').on('click', '.useTotal' , useTotal)
     $('#resultsTarget').on('click', '.deleteThis' , singleDelete)
+    $('#clearButton').on('click', clearInputs);
 }
 
 function keyPressListeners() {
@@ -23,34 +24,57 @@ function keyPressListeners() {
             if (e.which === 187 || e.which === 13) {
                 $('#equalsButton').siblings('button.operator').prop('disabled', false);
                 objectFilter();
-        }   else if (e.which === 189){
+            }   else if (e.which === 189 ||e.which === 109){
 
-            console.log('you pressed -');
-            if (
-                $('#minusOperator').prop('disabled') === false &&
-                $('#minusOperator').siblings('button.operator').prop('disabled') === true 
-            ) {
-                $('#minusOperator').siblings('button.operator').prop('disabled', false)
+                console.log('you pressed -');
+                if (
+                    $('#minusOperator').prop('disabled') === false &&
+                    $('#minusOperator').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#minusOperator').siblings('button.operator').prop('disabled', false)
 
-            } else {
-            $('#minusOperator').siblings('button.operator').prop('disabled', false);
-            $('#minusOperator').trigger('click'); 
+                } else {
+                $('#minusOperator').siblings('button.operator').prop('disabled', false);
+                $('#minusOperator').trigger('click'); 
+                }
+            } else if (e.which === 191 || e.which ===  111){
+                console.log('you pressed /');
+                if (
+                    $('#divideOperator').prop('disabled') === false &&
+                    $('#divideOperator').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#divideOperator').siblings('button.operator').prop('disabled', false)
+
+                } else {
+                $('#divideOperator').siblings('button.operator').prop('disabled', false);
+                $('#divideOperator').trigger('click'); 
+                }
+            } else if (e.which === 107){
+                console.log('you pressed +');
+                if (
+                    $('#plusOperator').prop('disabled') === false &&
+                    $('#plusOperator').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#plusOperator').siblings('button.operator').prop('disabled', false)
+    
+                } else {
+                $('#plusOperator').siblings('button.operator').prop('disabled', false);
+                $('#plusOperator').trigger('click'); 
+                }
+            } else if (e.which === 106){
+                console.log('you pressed *');
+                if (
+                    $('#multiplyOperator').prop('disabled') === false &&
+                    $('#multiplyOperator').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#multiplyOperator').siblings('button.operator').prop('disabled', false)
+    
+                } else {
+                $('#multiplyOperator').siblings('button.operator').prop('disabled', false);
+                $('#multiplyOperator').trigger('click'); 
+                }
             }
-        } else if (e.which === 191){
-            console.log('you pressed /');
-            if (
-                $('#divideOperator').prop('disabled') === false &&
-                $('#divideOperator').siblings('button.operator').prop('disabled') === true 
-            ) {
-                $('#divideOperator').siblings('button.operator').prop('disabled', false)
-
-            } else {
-            $('#divideOperator').siblings('button.operator').prop('disabled', false);
-            $('#divideOperator').trigger('click'); 
-            }
-        } 
-        }
-        else if (e.shiftKey === true ){
+        } else if (e.shiftKey === true ){
             if (e.which === 187){
                 console.log('you pressed +');
                 if (
@@ -76,11 +100,31 @@ function keyPressListeners() {
                 $('#multiplyOperator').trigger('click'); 
                 }
             }
+        }  
+    });
+    $(document).keydown(function (e) { 
+        if (e.altKey === true && e.which === 86){
+            console.log('you pressed √');
+                if (
+                    $('#squareRoot').prop('disabled') === false &&
+                    $('#squareRoot').siblings('button.operator').prop('disabled') === true 
+                ) {
+                    $('#squareRoot').siblings('button.operator').prop('disabled', false)
+                    $('#firstValue').show();
+    
+                } else {
+                $('#squareRoot').siblings('button.operator').prop('disabled', false);
+                $('#squareRoot').trigger('click'); 
+                }
         }
-
     })
-} 
+}
 
+function clearInputs() {
+    // event.preventDefault();
+    $('#firstValue').val('');
+    $('#secondValue').val('');
+}
 
 let operations = [];
 
@@ -134,7 +178,6 @@ function objectFilter() {
         }
             console.log(objectToSend)
             postData(objectToSend)    
-            
     }
 
 }
@@ -161,19 +204,22 @@ function postData(anotherObject) {
     })
 }
 
+//This function hides/clears the first input for the √ function
 function hideInput() {
-    if ( $('#squareRoot').siblings('button.operator').prop('disabled') === true)
-        { $('#firstValue').show();
-        $('#firstValue').val('')
-        $('#plusOperator').removeClass('list')
+    if ( 
+        $('#squareRoot').siblings('button.operator').prop('disabled') === true){
+            $('#firstValue').hide();
+            $('#firstValue').val('')
+            $('#firstValue').val(0);
+            $('#plusOperator').removeClass('list')
  
-    } else if ($('#squareRoot').siblings('button.operator').prop('disabled') === false){
-        $('#firstValue').hide();
-        $('#firstValue').val('')
-        $('#plusOperator').addClass('list')
-    }
-
-    $('#firstValue').val(0);
+    } else if (
+        $('#squareRoot').siblings('button.operator').prop('disabled') === false){
+            $('#firstValue').show();
+            $('#firstValue').val('')
+            $('#plusOperator').addClass('list')
+    } 
+    
 }
 
 
@@ -211,6 +257,8 @@ function addDataToDom(answer) {
     // append that data to the DOM
     for (let i = 0; i < answer.length; i++) {
         let returnedData = answer[i];
+        //if else statement deals the different types of returned data. square root only has one actual number
+
         if (returnedData.numOne === 'empty') {
             $('#resultsTarget').append(`
             <form class="form-inline toDelete">
@@ -228,18 +276,20 @@ function addDataToDom(answer) {
         }
     }
     //add the clear all button ONLY if there is at least list item with the class of list
+    // let totalBtn =  `<button class= "btn btn-success" id="total" > ${returnedData.total} </button>`;
     let removeAllBtn = `<button class= "btn btn-danger" id="clearHistory" > Clear The Entire History</button>`;
     let listItems = $('li.list').length;
     if ( 
         listItems > 0
-    ) {
+    ) { 
+        // $('#total').empty();
+        // $('#total').append(totalBtn);
         $('#deleteHistory').empty();
         $('#deleteHistory').append(removeAllBtn);
     } else {
         $('#deleteHistory').empty();
     }
 }
-
 
 //need an array to deal with list items
 let arrayOfEquations = [];
@@ -253,19 +303,25 @@ function reEnterData (){
     //get clicked on equation 
     let desiredEquation = anObject[clickedIndex];
     
-    //parse out individual data of equation
+    if (desiredEquation.numOne === 'empty'){
+        desiredEquation.numOne = 0;
+    } 
+
+
+    // parse out individual data of equation
     reInputOne = Number(desiredEquation.numOne);
     reInputTwo = Number(desiredEquation.numTwo);
     operator = desiredEquation.operator;
 
-    //sanity check
+    // sanity check
     console.log(reInputOne, reInputTwo, operator);
     
-    //reset the values of inputs and operator buttons to match parsed equation data
+    // reset the values of inputs and operator buttons to match parsed equation data
     $('#firstValue').val(reInputOne);
-    $('#secondValue').val(reInputTwo)
+    $('#secondValue').val(reInputTwo);
 
-    //repress operator button, COOL!
+    
+    // repress operator button, COOL!
     if (operator === '+') {
         $('#plusOperator').trigger('click');
     } else if (operator === '-') {
@@ -274,7 +330,11 @@ function reEnterData (){
         $('#multiplyOperator').trigger('click');
     } else if (operator === '/') {
         $('#divideOperator').trigger('click');
+    } else if (operator === '√') {
+        $('#squareRoot').trigger('click');
     } 
+
+   
 }
 
 
