@@ -1,21 +1,21 @@
 $(document).ready(onReady);
 
 function onReady() {
-    // load data from the server, put it on the DOM
-    getCalculatorData();
+  
+    // getCalculatorData();
     clickListeners();
     keyPressListeners();
 }
 
 function clickListeners() {
-    $('#plusOperator, #minusOperator, #multiplyOperator, #divideOperator, #squareRoot').on('click',  clickValue);
-    $('#squareRoot').on('click', hideInput);
-    $('#equalsButton').on('click', objectFilter);
-    $('#resultsTarget').on('click', '.list' ,reEnterData)
-    $('#deleteParent').on('click', '#clearHistory', deleteServerEquations)
-    $('#resultsTarget').on('click', '.useTotal' , useTotal)
-    $('#resultsTarget').on('click', '.deleteThis' , singleDelete)
-    $('#clearButton').on('click', clearInputs);
+    $('#calculator tbody td .btn').on('click', clickValue)
+    // $('#equalsButton').on('click', objectFilter);
+    // $('#resultsTarget').on('click', '.list' ,reEnterData)
+    // $('#deleteParent').on('click', '#clearHistory', deleteServerEquations)
+    // $('#resultsTarget').on('click', '.useTotal' , useTotal)
+    // $('#resultsTarget').on('click', '.deleteThis' , singleDelete)
+    // $('#clearButton').on('click', clearInputs);
+   
 }
 
 function keyPressListeners() {
@@ -35,7 +35,7 @@ function keyPressListeners() {
 
                 } else {
                 $('#minusOperator').siblings('button.operator').prop('disabled', false);
-                $('#minusOperator').trigger('click'); 
+                $('.minusOperator').trigger('click'); 
                 }
             } else if (e.which === 191 || e.which ===  111){
                 console.log('you pressed /');
@@ -47,7 +47,7 @@ function keyPressListeners() {
 
                 } else {
                 $('#divideOperator').siblings('button.operator').prop('disabled', false);
-                $('#divideOperator').trigger('click'); 
+                $('.divideOperator').trigger('click'); 
                 }
             } else if (e.which === 107){
                 console.log('you pressed +');
@@ -59,7 +59,7 @@ function keyPressListeners() {
     
                 } else {
                 $('#plusOperator').siblings('button.operator').prop('disabled', false);
-                $('#plusOperator').trigger('click'); 
+                $('.plusOperator').trigger('click'); 
                 }
             } else if (e.which === 106){
                 console.log('you pressed *');
@@ -71,7 +71,7 @@ function keyPressListeners() {
     
                 } else {
                 $('#multiplyOperator').siblings('button.operator').prop('disabled', false);
-                $('#multiplyOperator').trigger('click'); 
+                $('.multiplyOperator').trigger('click'); 
                 }
             }
         } else if (e.shiftKey === true ){
@@ -85,7 +85,7 @@ function keyPressListeners() {
     
                 } else {
                 $('#plusOperator').siblings('button.operator').prop('disabled', false);
-                $('#plusOperator').trigger('click'); 
+                $('.plusOperator').trigger('click'); 
                 }
             } else if (e.which === 56){
                 console.log('you pressed *');
@@ -97,7 +97,7 @@ function keyPressListeners() {
     
                 } else {
                 $('#multiplyOperator').siblings('button.operator').prop('disabled', false);
-                $('#multiplyOperator').trigger('click'); 
+                $('.multiplyOperator').trigger('click'); 
                 }
             }
         }  
@@ -121,29 +121,32 @@ function keyPressListeners() {
 }
 
 function clearInputs() {
-    // event.preventDefault();
     $('#firstValue').val('');
-    $('#secondValue').val('');
 }
 
 let operations = [];
 
-function clickValue(event) {
-    event.preventDefault();
-
+function clickValue() {
+    let engagedState = $(this).siblings('button.operator').prop('disabled');
+    let clearOperationsArray = (operations.length = 0);
+    console.log('in clickValue');
     //if / else statements toggle the buttons on / off if the user clicks same button  twice 
     if (   
         $(this).prop('disabled') === false &&
-        $(this).siblings('button.operator').prop('disabled') === true) 
+        engagedState === true) 
     {
         console.log('prop is enabled')
         $(this).siblings('button.operator').prop('disabled', false)
-        operations.length = 0;
+        clearOperationsArray;
     } else {
-        operations.length = 0;
+        clearOperationsArray;
         operator = $(this).attr('value');
+        console.log(operator);
+        
         operations.push(operator)
-        $(this).siblings('button.operator').prop('disabled', true);
+        console.log(operator);
+        $('#display').val(operator)
+        engagedState;
     }
 }
 
@@ -276,14 +279,11 @@ function addDataToDom(answer) {
         }
     }
     //add the clear all button ONLY if there is at least list item with the class of list
-    // let totalBtn =  `<button class= "btn btn-success" id="total" > ${returnedData.total} </button>`;
     let removeAllBtn = `<button class= "btn btn-danger" id="clearHistory" > Clear The Entire History</button>`;
     let listItems = $('li.list').length;
     if ( 
         listItems > 0
     ) { 
-        // $('#total').empty();
-        // $('#total').append(totalBtn);
         $('#deleteHistory').empty();
         $('#deleteHistory').append(removeAllBtn);
     } else {

@@ -11,20 +11,44 @@
 </head>
 <body>
     <header> <h1> Server Side Calculator</h1></header>
-    <main id="deleteParent">
-        <form id="calculator" class="form-inline"">
-            <input class="form-control"id="firstValue" type="number" placeholder="number 1">
-            <button class= "btn btn-outline-secondary operator form-control" id="plusOperator" type="operator" value="+" => + </button>
-            <button class= "btn btn-outline-secondary operator form-control" id="minusOperator" type="operator" value="-"> - </button>
-            <button class= "btn btn-outline-secondary operator form-control" id="multiplyOperator" type="operator" value="*"> * </button>
-            <button class= "btn btn-outline-secondary operator form-control" id="divideOperator" type="operator" value="/"> / </button>
-            <button class= "btn btn-outline-secondary operator form-control" id="squareRoot" type="operator" value="√"> √ </button>
-            <input class="form-control"id="secondValue" type="number" placeholder="number 2">
-            <button class= "btn btn-outline-secondary form-control" id="equalsButton" type="button" value="="> = </button>
-            <div>
-            <button class= "btn btn-outline-secondary form-control" id="clearButton" type="clear" value="delete"> clear your equation</button>
-            </div>
-        </form> 
+    <main>
+        <!-- <form id="calculator"> -->
+            <table id="calculator">
+                <tbody>
+                 <tr> <td colspan="4">
+                    <input type="text" id="display" class="form-control"></td> </tr>
+                <tr>
+                    <td><button class="btn btn-outline-secondary clear form-control allClear"  value="AC">AC</button></td>
+                    <td><button id=”plusMinus” class="btn btn-outline-secondary operator form-control plusMinus"  value="±">±</button></td>
+                    <td><button id=”squareRoot” class="btn btn-outline-secondary operator form-control squareRoot" value="√">√</button></td>
+                    <td><button class="btn btn-outline-secondary operator form-control divideOperator" value="÷" >÷</button></td>
+                </tr>
+                <tr>
+                    <td><button class="btn btn-outline-secondary number 7"  value="7">7</button></td>
+                    <td><button class="btn btn-outline-secondary number 8"  value="8">8</button></td>
+                    <td><button class="btn btn-outline-secondary number 9" value="9">9</button></td>
+                    <td ><button class="btn btn-outline-secondary operator multiplyOperator" value="×">×</button></td>
+                </tr>
+                <tr>
+                    <td><button class="btn btn-outline-secondary number 4"  value="4">4</button></td>
+                    <td><button class="btn btn-outline-secondary number 5" value="5" >5</button></td>
+                    <td><button class="btn btn-outline-secondary number 6" value="6">6</button></td>
+                    <td ><button class="btn btn-outline-secondary operator minusOperator" value="-">-</button></td>
+                </tr>
+                <tr>
+                    <td><button class="btn btn-outline-secondary number 1"  value="1">1</button></td>
+                    <td><button class="btn btn-outline-secondary number 2"  value="2">2</button></td>
+                    <td><button class="btn btn-outline-secondary number 3" value="3">3</button></td>
+                    <td  ><button class="btn btn-outline-secondary operator plusOperator" value="+" >+</button></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button class="btn btn-outline-secondary number 0" style="width:100%" value="0">0</button></td>
+                    <td><button class="btn btn-outline-secondary number decimalPoint" value="." >.</button></td>
+                    <td><button class="btn btn-outline-secondary number equals" value="=" >=</button></td>
+                </tr>        
+                </tbody>
+            </table>    
+        <!-- </form>  -->
         <div id="deleteHistory">
         </div>
     </main>
