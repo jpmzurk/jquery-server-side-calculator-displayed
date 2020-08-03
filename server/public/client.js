@@ -2,7 +2,7 @@ $(document).ready(onReady);
 
 function onReady() {
   
-    // getCalculatorData();
+    getCalculatorData();
     clickListeners();
     keyPressListeners();
 }
